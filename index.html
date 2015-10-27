@@ -14,6 +14,7 @@
         #image { height: 25vh; background-color: black; }
         #image .item { height: 100%; max-height: 100%; }
         #image .item img { height: 25vh; max-height: 25vh; }
+        .slick-slider { margin-bottom: 0; }
 
     </style>
 </head>
@@ -108,7 +109,7 @@
           lazyLoad: 'ondemand',
           slidesToShow: 5,
           slidesToScroll: 1,
-//            arrows: false,
+            arrows: false,
             centerMode: true,
             variableWidth: true
         });
@@ -137,9 +138,10 @@
             var lat = parseFloat(coords[0]);
             var lon = parseFloat(coords[1]);
 
-            map.panTo([lat, lon], {
-                animate: true,
-                duration: .5
+            map.setZoom(9)
+               .panTo([lat, lon], {
+                    animate: true,
+                    duration: .5
             });
 
         });
