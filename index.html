@@ -33,7 +33,7 @@
     var latLngs = 'https://bwainstock.cartodb.com/api/v2/sql?format=GeoJSON&q=select%20*%20from%20bwgeotest&api_key=7c40f7f14e75856647c35fb916c3a1cdf73b4a70';
     var lineURL = "https://bwainstock.cartodb.com/api/v2/sql?format=GeoJSON&q=SELECT ST_MakeLine(the_geom ORDER BY unixtime) as the_geom from test WHERE feedid = '0hhvvy86u7pTm6F1UytYEAj2uhyXUOt1u'&api_key=7c40f7f14e75856647c35fb916c3a1cdf73b4a70";
 
-    console.log(latLngs);
+//    console.log(latLngs);
     var map = L.map('map').setView([32.6064, -116.4681], 9);
     var Thunderforest_Landscape = L.tileLayer('http://{s}.tile.thunderforest.com/landscape/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="http://www.opencyclemap.org">OpenCycleMap</a>, &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
@@ -117,12 +117,12 @@
 
         geoJsonLayer.eachLayer(function(layer) {
             layer.on('click', function(event){
-                console.log(event.latlng);
+//                console.log(event.latlng);
                 var coords = event.latlng.lat + ',' + event.latlng.lng;
-                console.log(coords);
+//                console.log(coords);
                 var imgDiv = $('img[coords="' + coords + '"]');
                 var imgIndex = imgDiv.parents('div.item').attr('data-slick-index');
-                console.log(imgDiv);
+//                console.log(imgDiv);
                 imageWrapper.slick('slickGoTo', imgIndex);
 //                imageWrapper.slick('slickGoTo', imgIndex);
 
@@ -133,7 +133,7 @@
             var slideNum = currentSlide;
             var slideDiv = $('div[data-slick-index=' + slideNum + ']');
             var imgDiv = slideDiv.find('img');
-            console.log(imgDiv);
+//            console.log(imgDiv);
             var coords = imgDiv.attr('coords').split(',');
 
             var lat = parseFloat(coords[0]);
