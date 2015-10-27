@@ -118,12 +118,12 @@
 
         geoJsonLayer.eachLayer(function(layer) {
             layer.on('click', function(event){
+                var imgID = event.target.options.alt;
 //                console.log(event.latlng);
-                var coords = event.latlng.lat + ',' + event.latlng.lng;
-//                console.log(coords);
-                var imgDiv = $('img[coords="' + coords + '"]');
+                var imgDiv = $('img[carto-id="' + imgID + '"]');
                 var imgIndex = imgDiv.parents('div.item').attr('data-slick-index');
 //                console.log(imgDiv);
+//                console.log(imgIndex);
                 imageWrapper.slick('slickGoTo', imgIndex);
 //                imageWrapper.slick('slickGoTo', imgIndex);
 
