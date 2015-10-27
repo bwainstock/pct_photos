@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.5/leaflet.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/jquery.slick/1.5.7/slick.css"/>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/jquery.slick/1.5.8/slick-theme.css"/>
+    <style>
+        body { padding: 0; margin: 0; height: 100vh; }
+        #map { height: 75vh; }
+        #image { height: 25vh; background-color: black; }
+        #image .item { height: 100%; max-height: 100%; }
+        #image .item img { height: 25vh; max-height: 25vh; }
+
+    </style>
+</head>
+<body>
+    <div id="wrapper">
+        <div id="map"></div>
+        <div id="image" class="owl-carousel"></div>
+    </div>
+
+<script src="./js/jquery-2.1.4.js"></script>
+<script src="./js/leaflet.js"></script>
+<script src="./js/leaflet.ajax.js"></script>
+<script>
+    var latLngs = 'https://bwainstock.cartodb.com/api/v2/sql?format=GeoJSON&q=select%20*%20from%20bwgeotest&api_key=7c40f7f14e75856647c35fb916c3a1cdf73b4a70';
+    var lineURL = "https://bwainstock.cartodb.com/api/v2/sql?format=GeoJSON&q=SELECT ST_MakeLine(the_geom ORDER BY unixtime) as the_geom from test WHERE feedid = '0hhvvy86u7pTm6F1UytYEAj2uhyXUOt1u'&api_key=7c40f7f14e75856647c35fb916c3a1cdf73b4a70";
+
+    console.log(latLngs);
+    var map = L.map('map').setView([32.6064, -116.4681], 9);
+    var Thunderforest_Landscape = L.tileLayer('http://{s}.tile.thunderforest.com/landscape/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="http://www.opencyclemap.org">OpenCycleMap</a>, &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    });
+    Thunderforest_Landscape.addTo(map);
+
+    var data = [];
+
+    var goldStarIcon = L.divIcon({
+        className: 'fa-icon fa fa-star fa-2x',
+        html: '<style>.fa-icon { color: #FFCC00 }</style>'
+    });
+    var redStarIcon = L.divIcon({
+        className: 'fa-icon fa fa-star fa-2x',
+        html: '<style>.fa-icon { color: red }</style>'
+    });
+
+    var lineLayer = L.geoJson.ajax(lineURL, {
+        dataType: "jsonp",
+        style: {
+            "color": "black",
+            "dashArray": "5,20",
+            "clickable": false,
+        },
+    });
+
+    var geoJsonLayer = L.geoJson.ajax(latLngs, {
+        dataType: "jsonp",
+
+        onEachFeature: function (feature, layer) {
+            var popupHTML = '<a href="' + feature.properties.url + '"  class="fancybox"><img width="250px" src="' + feature.properties.url + '"/></a>';
+            var popupOptions = {
+                'maxWidth': '500',
+                'className' : 'image'
+            };
+            if (feature.properties) {
+//                layer.bindPopup(popupHTML, popupOptions);
+                data.push(feature.properties);
+                var coords = feature.properties.lat.toFixed(6) + ',' + feature.properties.lon.toFixed(6);
+                $( '#image').append('<div class="item"><a class="fancybox" href="' + feature.properties.url + '"><img coords="' + coords + '" data-lazy="' + feature.properties.url + '"></a></div>');
+
+//                layer.on('click', function(event){
+//                    console.log(event.latlng);
+//                    var coords = event.latlng.lat + ',' + event.latlng.lng;
+//                    console.log(coords);
+//                    var imgDiv = $('img[coords="' + coords + '"]');
+//                    console.log(imgDiv);
+//                });
+            }
+        },
+
+        pointToLayer: function (feature, latlng) {
+            return L.marker(latlng, {icon: goldStarIcon});
+        }
+    });
+
+    geoJsonLayer.addTo(map);
+    lineLayer.addTo(map);
+    map.fitBounds(geoJsonLayer.getBounds());
+
+
+</script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/jquery.slick/1.5.7/slick.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+<script>
+    $( window ).load(function() {
+
+        $(".fancybox").fancybox({
+            padding : 0,
+            hideOnContentClick: true
+        });
+
+        var imageWrapper = $('#image');
+        imageWrapper.slick({
+          lazyLoad: 'ondemand',
+          slidesToShow: 3,
+          slidesToScroll: 1,
+            arrows: false,
+            centerMode: true,
+            variableWidth: true
+        });
+
+        geoJsonLayer.eachLayer(function(layer) {
+            layer.on('click', function(event){
+                console.log(event.latlng);
+                var coords = event.latlng.lat + ',' + event.latlng.lng;
+                console.log(coords);
+                var imgDiv = $('img[coords="' + coords + '"]');
+                var imgIndex = imgDiv.parents('div.item').attr('data-slick-index');
+                console.log(imgDiv);
+                imageWrapper.slick('slickGoTo', imgIndex);
+//                imageWrapper.slick('slickGoTo', imgIndex);
+
+            });
+        });
+
+        imageWrapper.on('afterChange', function(event, slick, currentSlide){
+            var slideNum = currentSlide;
+            var slideDiv = $('div[data-slick-index=' + slideNum + ']');
+            var imgDiv = slideDiv.find('img');
+            console.log(imgDiv);
+            var coords = imgDiv.attr('coords').split(',');
+
+            var lat = parseFloat(coords[0]);
+            var lon = parseFloat(coords[1]);
+
+            map.panTo([lat, lon], {
+                animate: true,
+                duration: .5
+            });
+
+        });
+    });
+</script>
+</body>
+</html>
