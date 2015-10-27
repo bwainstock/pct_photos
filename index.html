@@ -106,12 +106,13 @@
 
         var imageWrapper = $('#image');
         imageWrapper.slick({
-          lazyLoad: 'ondemand',
-          slidesToShow: 5,
-          slidesToScroll: 1,
+            lazyLoad: 'ondemand',
+            slidesToShow: 5,
+            slidesToScroll: 1,
             arrows: false,
             centerMode: true,
-            variableWidth: true
+            variableWidth: true,
+            focusOnSelect: true
         });
 
         geoJsonLayer.eachLayer(function(layer) {
@@ -138,10 +139,9 @@
             var lat = parseFloat(coords[0]);
             var lon = parseFloat(coords[1]);
 
-            map.setZoom(9)
-               .panTo([lat, lon], {
-                    animate: true,
-                    duration: .5
+            map.panTo([lat, lon], {
+                animate: true,
+                duration: .5
             });
 
         });
