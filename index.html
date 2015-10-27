@@ -47,8 +47,8 @@
         html: '<style>.fa-icon { color: #FFCC00 }</style>'
     });
     var redStarIcon = L.divIcon({
-        className: 'fa-icon fa fa-star fa-2x',
-        html: '<style>.fa-icon { color: red }</style>'
+        className: 'selected-icon fa fa-star fa-2x',
+        html: '<style>.selected-icon { color: red }</style>'
     });
 
     var lineLayer = L.geoJson.ajax(lineURL, {
@@ -112,7 +112,8 @@
             arrows: false,
             centerMode: true,
             variableWidth: true,
-            focusOnSelect: true
+            focusOnSelect: true,
+            infinite: false
         });
 
         geoJsonLayer.eachLayer(function(layer) {
@@ -130,7 +131,24 @@
         });
 
         imageWrapper.on('beforeChange', function (event, slick, currentSlide, nextSlide) {
-            
+            var currentSlideNum = currentSlide;
+            var currentSlideDiv = $('div[data-slick-index=' + currentSlideNum + ']');
+            var currentImgDiv = currentSlideDiv.find('img');
+            var currentCartoID = currentImgDiv .attr('carto-id');
+
+            var nextSlideNum = nextSlide;
+            var nextSlideDiv = $('div[data-slick-index=' + nextSlideNum + ']');
+            var nextImgDiv = nextSlideDiv.find('img');
+            var nextCartoID = nextImgDiv .attr('carto-id');
+            console.log(currentCartoID);
+            geoJsonLayer.eachLayer(function(marker){
+               if (marker.options.alt == currentCartoID) {
+                   marker.setIcon(goldStarIcon);
+               }
+               if (marker.options.alt == nextCartoID) {
+                   marker.setIcon(redStarIcon);
+               }
+            });
         });
 
         imageWrapper.on('afterChange', function(event, slick, currentSlide){
