@@ -64,6 +64,11 @@
         html: '<style>.selected-icon { color: red }</style>'
     });
 
+    var xlargeRedStarIcon = L.divIcon({
+        className: 'selected-icon fa fa-star fa-4x',
+        html: '<style>.selected-icon { color: red }</style>'
+    });
+
     var lineLayer = L.geoJson.ajax(lineURL, {
         dataType: "jsonp",
         style: {
@@ -96,30 +101,20 @@
         }
     });
 
-//    function resizeMarker() {
-//        var zoomLevel = map.getZoom();
-//        if (zoomLevel == 12 || zoomLevel == 13) {
-//            geoJsonLayer.eachLayer(function (marker) {
-//               marker.setIcon(largeGoldStarIcon);
-//            });
-//        }
-//        else if ( zoomLevel > 13 ) {
-//            geoJsonLayer.eachLayer(function (marker) {
-//               marker.setIcon(xlargeGoldStarIcon);
-//            });
-//        }
-//        else {
-//            geoJsonLayer.eachLayer(function (marker) {
-//               marker.setIcon(goldStarIcon);
-//            });
-//        }
-//    }
-
-//    map.on('zoomend', function (e) {
-//        geoJsonLayer.eachLayer(function (marker) {
-//            resizeMarker();
-//        });
-//    });
+   map.on('zoomend', function (e) {
+       var zoomLevel = map.getZoom();
+       geoJsonLayer.eachLayer(function (marker) {
+           if (zoomLevel > 13) {
+             marker.setIcon(xlargeGoldStarIcon);
+           }
+           else if (zoomLevel == 12 || zoomLevel == 13) {
+             marker.setIcon(largeGoldStarIcon);
+           }
+           else {
+             marker.setIcon(goldStarIcon);
+           }
+       });
+   });
 
     Thunderforest_Landscape.addTo(map);
     geoJsonLayer.addTo(map);
@@ -163,6 +158,7 @@
         });
 
         imageWrapper.on('beforeChange', function (event, slick, currentSlide, nextSlide) {
+            var zoomLevel = map.getZoom();
             var currentSlideNum = currentSlide;
             var currentSlideDiv = $('div[data-slick-index=' + currentSlideNum + ']');
             var currentImgDiv = currentSlideDiv.find('img');
@@ -175,10 +171,26 @@
             console.log(currentCartoID);
             geoJsonLayer.eachLayer(function(marker){
                if (marker.options.alt == currentCartoID) {
+                 if (zoomLevel > 13) {
+                   marker.setIcon(xlargeGoldStarIcon);
+                 }
+                 else if (zoomLevel == 12 || zoomLevel == 13) {
+                   marker.setIcon(largeGoldStarIcon);
+                 }
+                 else {
                    marker.setIcon(goldStarIcon);
+                 }
                }
                if (marker.options.alt == nextCartoID) {
+                 if (zoomLevel > 13) {
+                   marker.setIcon(xlargeRedStarIcon);
+                 }
+                 else if (zoomLevel == 12 || zoomLevel == 13) {
+                   marker.setIcon(largeRedStarIcon);
+                 }
+                 else {
                    marker.setIcon(redStarIcon);
+                 }
                }
             });
         });
