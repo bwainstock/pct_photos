@@ -101,7 +101,7 @@
 //                layer.bindPopup(popupHTML, popupOptions);
                 data.push(feature.properties);
                 var coords = feature.properties.lat.toFixed(6) + ',' + feature.properties.lon.toFixed(6);
-                $( '#image').append('<div class="item"><a class="fancybox" href="' + feature.properties.url + '"><img carto-id="' + feature.properties.cartodb_id + '"coords="' + coords + '" data-lazy="' + feature.properties.url + '"></a></div>');
+                $( '#image').append('<div class="item"><a class="fancybox" rel="pct" href="' + feature.properties.url + '"><img carto-id="' + feature.properties.cartodb_id + '"coords="' + coords + '" data-lazy="' + feature.properties.url + '"></a></div>');
 
             }
         },
@@ -135,18 +135,21 @@
 </script>
 <script>
     $( window ).load(function() {
-
+        var imageWrapper = $('#image');
         $(".fancybox").fancybox({
             padding : 0,
-            closeClick: true
+            closeClick: true,
+            afterLoad: function(current, previous) {
+                if (previous) {
+                    imageWrapper.slick('slickNext');
+                }
+            }
         });
 
-        var imageWrapper = $('#image');
         imageWrapper.slick({
             lazyLoad: 'ondemand',
             slidesToShow: 5,
             slidesToScroll: 1,
-//            arrows: false,
             centerMode: true,
             variableWidth: true,
             focusOnSelect: true,
@@ -156,13 +159,9 @@
         geoJsonLayer.eachLayer(function(layer) {
             layer.on('click', function(event){
                 var imgID = event.target.options.alt;
-//                console.log(event.latlng);
                 var imgDiv = $('img[carto-id="' + imgID + '"]');
                 var imgIndex = imgDiv.parents('div.item').attr('data-slick-index');
-//                console.log(imgDiv);
-//                console.log(imgIndex);
                 imageWrapper.slick('slickGoTo', imgIndex);
-//                imageWrapper.slick('slickGoTo', imgIndex);
 
             });
         });
@@ -178,7 +177,6 @@
             var nextSlideDiv = $('div[data-slick-index=' + nextSlideNum + ']');
             var nextImgDiv = nextSlideDiv.find('img');
             var nextCartoID = nextImgDiv .attr('carto-id');
-            console.log(currentCartoID);
             geoJsonLayer.eachLayer(function(marker){
                if (marker.options.alt == currentCartoID) {
                  if (zoomLevel > 13) {
@@ -209,7 +207,6 @@
             var slideNum = currentSlide;
             var slideDiv = $('div[data-slick-index=' + slideNum + ']');
             var imgDiv = slideDiv.find('img');
-//            console.log(imgDiv);
             var coords = imgDiv.attr('coords').split(',');
 
             var lat = parseFloat(coords[0]);
