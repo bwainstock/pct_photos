@@ -41,7 +41,7 @@
     var latLngs = 'https://bwainstock.cartodb.com/api/v2/sql?format=GeoJSON&q=SELECT%20*%20FROM%20pct_pictures%20ORDER%20BY%20date_taken,%20time_taken&api_key=7c40f7f14e75856647c35fb916c3a1cdf73b4a70';
     var lineURL = "https://bwainstock.cartodb.com/api/v2/sql?format=GeoJSON&q=SELECT ST_MakeLine(the_geom ORDER BY unixtime) as the_geom from test WHERE feedid = '0hhvvy86u7pTm6F1UytYEAj2uhyXUOt1u'&api_key=7c40f7f14e75856647c35fb916c3a1cdf73b4a70";
     var map = L.map('map').setView([32.6064, -116.4681], 9);
-    var Thunderforest_Landscape = L.tileLayer('http://{s}.tile.thunderforest.com/landscape/{z}/{x}/{y}.png', {
+    var Thunderforest_Landscape = L.tileLayer('http://{s}.tile.thunderforest.com/landscape/{z}/{x}/{y}.png?apikey=aba416f697cf43ea8abd390e3ae35958', {
         attribution: '&copy; <a href="http://www.opencyclemap.org">OpenCycleMap</a>, &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     });
 
